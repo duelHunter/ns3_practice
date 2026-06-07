@@ -1,0 +1,21 @@
+# This repo only tracks your own ns-3 project files (scratch/),
+# not the ~1.4GB ns-3 framework, build output, or generated logs.
+
+# Ignore everything by default
+*
+
+# Re-open the directory chain down to the files we want to track
+!ns-allinone-3.35/
+ns-allinone-3.35/*
+!ns-allinone-3.35/ns-3.35/
+
+ns-allinone-3.35/ns-3.35/*
+!ns-allinone-3.35/ns-3.35/scratch/
+
+# Your own scratch source files
+!ns-allinone-3.35/ns-3.35/scratch/*.cc
+!ns-allinone-3.35/ns-3.35/scratch/*.cpp
+!ns-allinone-3.35/ns-3.35/scratch/*.h
+!ns-allinone-3.35/ns-3.35/scratch/*.py
+
+!.gitignore
