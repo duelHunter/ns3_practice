@@ -17,5 +17,8 @@ ns-allinone-3.35/ns-3.35/*
 !ns-allinone-3.35/ns-3.35/scratch/*.cpp
 !ns-allinone-3.35/ns-3.35/scratch/*.h
 !ns-allinone-3.35/ns-3.35/scratch/*.py
+!ns-allinone-3.35/ns-3.35/scratch/*.md
 
 !.gitignore
+
+
