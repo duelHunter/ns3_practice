@@ -3,6 +3,8 @@
 This project creates a simple **three-node wired network** in ns-3.
 
 The goal is to understand how packets travel from one node to another through an intermediate node.
+Think this is like our home Wifi router is creating a connection between the pc and internet.
+For that we have to assign two IPs to the router. 
 
 ## Network Diagram
 
@@ -27,84 +29,6 @@ In this simulation:
 - Node 2 replies back to Node 0.
 
 This project introduces the idea of **multi-hop communication**.
-
----
-
-## Full ns-3 Code
-
-Save this file as:
-
-```bash
-scratch/project3.cc
-```
-
-```cpp
-#include "ns3/core-module.h"
-#include "ns3/network-module.h"
-#include "ns3/internet-module.h"
-#include "ns3/point-to-point-module.h"
-#include "ns3/applications-module.h"
-
-using namespace ns3;
-
-NS_LOG_COMPONENT_DEFINE("Project3ThreeNodeNetwork");
-
-int main(int argc, char *argv[])
-{
-    Time::SetResolution(Time::NS);
-
-    LogComponentEnable("UdpEchoClientApplication", LOG_LEVEL_INFO);
-    LogComponentEnable("UdpEchoServerApplication", LOG_LEVEL_INFO);
-
-    NodeContainer nodes;
-    nodes.Create(3);
-
-    NodeContainer node0node1 = NodeContainer(nodes.Get(0), nodes.Get(1));
-    NodeContainer node1node2 = NodeContainer(nodes.Get(1), nodes.Get(2));
-
-    PointToPointHelper pointToPoint;
-    pointToPoint.SetDeviceAttribute("DataRate", StringValue("5Mbps"));
-    pointToPoint.SetChannelAttribute("Delay", StringValue("2ms"));
-
-    NetDeviceContainer device0device1 = pointToPoint.Install(node0node1);
-    NetDeviceContainer device1device2 = pointToPoint.Install(node1node2);
-
-    InternetStackHelper stack;
-    stack.Install(nodes);
-
-    Ipv4AddressHelper address1;
-    address1.SetBase("10.1.1.0", "255.255.255.0");
-    Ipv4InterfaceContainer interface0interface1 = address1.Assign(device0device1);
-
-    Ipv4AddressHelper address2;
-    address2.SetBase("10.1.2.0", "255.255.255.0");
-    Ipv4InterfaceContainer interface1interface2 = address2.Assign(device1device2);
-
-    Ipv4GlobalRoutingHelper::PopulateRoutingTables();
-
-    UdpEchoServerHelper echoServer(9);
-
-    ApplicationContainer serverApps = echoServer.Install(nodes.Get(2));
-    serverApps.Start(Seconds(1.0));
-    serverApps.Stop(Seconds(10.0));
-
-    UdpEchoClientHelper echoClient(interface1interface2.GetAddress(1), 9);
-    echoClient.SetAttribute("MaxPackets", UintegerValue(5));
-    echoClient.SetAttribute("Interval", TimeValue(Seconds(1.0)));
-    echoClient.SetAttribute("PacketSize", UintegerValue(1024));
-
-    ApplicationContainer clientApps = echoClient.Install(nodes.Get(0));
-    clientApps.Start(Seconds(2.0));
-    clientApps.Stop(Seconds(10.0));
-
-    pointToPoint.EnablePcapAll("project3");
-
-    Simulator::Run();
-    Simulator::Destroy();
-
-    return 0;
-}
-```
 
 ---
 
